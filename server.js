@@ -7,6 +7,9 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 //parse incoming json data
 app.use(express.json());
+// calls extra directories to run
+app.use(express.static('public'));
+
 const { animals } = require('./data/animals');
 
 function filterByQuery(query, animalsArray) {
@@ -81,6 +84,8 @@ function validateAnimal(animal) {
     return true;
 };
 
+function handleAnimalSubmit()
+
 app.get('/api/animals', (req, res) => {
     let results = animals;
     if (req.query) {
@@ -110,6 +115,22 @@ app.post('/api/animals', (req, res) => {
     const animal = createNewAnimal(req.body, animals);
     res.json(animal);
     }
+});
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/index.html'));
+});
+
+app.get('/animals', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/animals.html'));
+});
+
+app.get('/zookeepers', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/zookeepers.html'));
+});
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/index.html'));
 });
 
 app.listen(PORT, () => {
